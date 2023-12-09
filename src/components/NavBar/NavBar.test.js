@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import NavBar from './NavBar';
 
 test('The NavBar component should render', () => {
@@ -7,6 +7,18 @@ test('The NavBar component should render', () => {
 });
 
 test('The NavBar component should render with a title', () => {
-  const view = render(<NavBar title="Test application #2" />);
-  expect(view).toMatchSnapshot();
+  const title = 'Test application';
+  render(<NavBar title={title} />);
+  expect(screen.getByRole('heading')).toHaveTextContent(title);
+});
+
+test('The NavBar component should respond to button clicks', () => {
+  const mockFunction = jest.fn();
+  render(<NavBar goBack={mockFunction} openForm={mockFunction} />);
+
+  fireEvent.click(screen.getByText('< Go Back'));
+  expect(mockFunction).toHaveBeenCalled();
+
+  fireEvent.click(screen.getByText('+ Add Review'));
+  expect(mockFunction).toHaveBeenCalledTimes(2);
 });
